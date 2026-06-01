@@ -1,4 +1,4 @@
-# Img2RNA: Conditional Diffusion Model for Generating RNA-seq from Microscopy Imaging
+# PhenoSeq: Conditional Diffusion Model for Generating RNA-seq from Microscopy Imaging
 
 A diffusion-based model that generates single-cell RNA-seq embeddings (scGPT) conditioned on microscopy imaging features (ViT-L).
 
