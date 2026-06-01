@@ -23,9 +23,6 @@
 
 Rather than treating morphology and transcriptomics as independent measurements, PhenoSeq learns a shared latent relationship between the two modalities. Given only imaging-derived features, the model synthesises transcriptomic representations in the pretrained **scGPT embedding space**, enabling downstream molecular analysis without sequencing.
 
-<p align="center">
-  <img src="assets/architecture.png" width="90%">
-</p>
 
 ### Key Idea
 
