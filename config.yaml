@@ -1,0 +1,146 @@
+# ── Data ──────────────────────────────────────────────────────────────────────
+data:
+  # ── Raw source files (used only by prepare_data.py) ──────────────────────
+  # Paths to imaging feature h5ad files (ViT-L, 5120-dim)
+  imaging_paths:
+    - ../scGeneScope/data/features/imaging/imagenet/vit-l/round_1.h5ad
+    - ../scGeneScope/data/features/imaging/imagenet/vit-l/round_2.h5ad
+
+  # Paths to RNA-seq feature h5ad files (scGPT, 512-dim in obsm['scGPT'])
+  rnaseq_paths:
+    - ../scGeneScope/data/features/rnaseq/scgpt/round_1.h5ad
+    - ../scGeneScope/data/features/rnaseq/scgpt/round_2.h5ad
+
+  # Column name used to match imaging ↔ RNA-seq samples
+  sample_id_col: Sample_ID
+
+  # obsm key for scGPT embeddings in RNA-seq anndata
+  rnaseq_obsm_key: scGPT
+
+  # ── Pre-extracted per-sample cache (used by train.py) ───────────────────
+  # Run `python prepare_data.py` once to populate these directories.
+  # Each sample is stored as <Sample_ID>.npz with key 'X'.
+  img_cache_dir: data/cache/imaging
+  rna_cache_dir: data/cache/rnaseq
+
+  # ── Training data settings ───────────────────────────────────────────────
+  # Train/val split ratio (fraction used for training)
+  train_ratio: 0.85
+
+  # Number of imaging cells to sample per forward pass
+  n_imaging_cells: 16
+
+  # Number of dataloader workers.
+  # 0 = single-process (lowest RAM). Each worker holds its own LRU cache.
+  num_workers: 4
+
+  # Max imaging samples cached in RAM per worker process (lazy mode only).
+  img_cache_size: 32
+
+  # Preload ALL imaging into RAM at startup (~1-2 min, ~15 GB).
+  # STRONGLY recommended on high-RAM machines (A100 nodes etc.).
+  # __getitem__ becomes pure numpy indexing → GPU runs at full utilisation.
+  # Set to false only if RAM is too limited.
+  preload_imaging: true
+
+  # Pin memory for GPU transfer (auto-disabled when no GPU present)
+  pin_memory: true
+
+
+# ── Model ─────────────────────────────────────────────────────────────────────
+model:
+  # Dimensionality of imaging input features (5 channels × 1024)
+  img_dim: 5120
+
+  # Dimensionality of scGPT RNA-seq embeddings (target)
+  rna_dim: 512
+
+  # Internal model dimension
+  model_dim: 1024
+
+  # Number of attention heads
+  num_heads: 8
+
+  # Number of cross-attention transformer blocks
+  num_layers: 6
+
+  # Dropout rate
+  dropout: 0.1
+
+  # Time embedding dimension
+  time_dim: 256
+
+  # Feedforward hidden dimension multiplier
+  ff_mult: 4
+
+
+# ── Diffusion ─────────────────────────────────────────────────────────────────
+diffusion:
+  # Number of diffusion steps
+  num_steps: 1000
+
+  # Beta schedule type: "linear" or "cosine"
+  schedule: cosine
+
+  # Linear schedule bounds (only used if schedule=linear)
+  beta_start: 0.0001
+  beta_end: 0.02
+
+
+# ── Training ──────────────────────────────────────────────────────────────────
+training:
+  batch_size: 256
+  lr: 1.0e-4
+  weight_decay: 1.0e-5
+  epochs: 5000
+
+  # Gradient accumulation steps
+  grad_accum_steps: 1
+
+  # Max gradient norm for clipping
+  max_grad_norm: 1.0
+
+  # Learning rate scheduler
+  scheduler: cosine       # "cosine" or "step"
+  warmup_epochs: 5
+
+  # EMA decay for model weights
+  ema_decay: 0.9999
+
+  # Logging & checkpointing
+  log_every: 100          # steps
+  val_every: 1            # epochs
+  save_every: 10          # epochs
+  checkpoint_dir: checkpoints
+  log_dir: logs
+
+  # Mixed precision
+  mixed_precision: true
+
+  # Random seed
+  seed: 42
+
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+logging:
+  # Use wandb for experiment tracking (set to false to use tensorboard only)
+  use_wandb: true
+
+  # wandb project name
+  wandb_project: img2rna
+
+  # wandb entity (team or username, null = default)
+  wandb_entity: null
+
+  # wandb run name (null = auto-generated)
+  wandb_run_name: scgenescope
+
+  # wandb tags
+  wandb_tags:
+    - diffusion
+    - img2rna
+    - scGPT
+
+  # Also log to tensorboard alongside wandb
+  use_tensorboard: true
+
