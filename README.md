@@ -158,6 +158,8 @@ We train and evaluate on the **scGeneScope** dataset.
 
 Dataset:
 
+(https://huggingface.co/datasets/altoslabs/scGeneScope)
+
 ```text
 scGeneScope
 ├── Imaging
