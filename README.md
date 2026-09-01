@@ -8,7 +8,7 @@
   <img src="assets/phenoseq_hero.png" width="100%">
 </p>
 
-[![Paper](https://img.shields.io/badge/Paper-ICML%20Workshop-blue)]()
+[![Paper](https://img.shields.io/badge/Paper-ICML%20Workshop-blue)](https://openreview.net/pdf?id=ACHMa1e8J1)
 [![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model-yellow)](https://huggingface.co/Sentinal4D/PhenoSeq)
 [![Python](https://img.shields.io/badge/Python-3.10+-green)]()
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red)]()
